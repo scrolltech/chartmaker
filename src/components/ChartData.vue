@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import Vuetable from 'vuetable-2';
 import EditChartField from './EditChartField';
 
@@ -140,7 +141,16 @@ export default {
       const shouldPublish = confirm(
         'Are you sure you want to publish this chart?'
       );
+
       if (shouldPublish) {
+        const Authorization = Cookies.get('__s');
+        if (!Authorization) {
+          this.flashNotification(
+            'Make sure you are logged in to CMS!',
+            'error'
+          );
+          return false;
+        }
         saveAndPublishChart(
           chartId,
           { content: this.localData.data },
@@ -169,7 +179,7 @@ export default {
       setInterval(() => {
         this.notification.message = '';
         this.notification.type = 'type';
-      }, 10000);
+      }, 15000);
     },
 
     setInitialData(data) {

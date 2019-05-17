@@ -14,3 +14,5 @@ export default axios.create({
     Authorization
   }
 });
+
+export const MAX_COUNT = 543;

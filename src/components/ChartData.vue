@@ -53,6 +53,7 @@ import Vuetable from 'vuetable-2';
 import EditChartField from './EditChartField';
 
 import { fetchCharts, saveAndPublishChart } from '../utils/network';
+import { MAX_COUNT } from '../config';
 import Notification from './Notification';
 
 const chartId = 1;
@@ -137,7 +138,31 @@ export default {
       this.fieldEditMode.show = false;
     },
 
+    validateData() {
+      let sum = 0;
+      let data = this.localData.data;
+      let numbersValid = true;
+
+      data.forEach(el => {
+        console.log('seats', el.seats, el.seats.length);
+        if (el.seats == null || el.seats.length === 0) {
+          numbersValid = false;
+        }
+        sum += parseInt(el.seats, 10);
+      });
+      console.log(sum, MAX_COUNT);
+      return numbersValid && sum <= MAX_COUNT;
+    },
+
     publish() {
+      if (!this.validateData()) {
+        this.flashNotification(
+          'Looks like there is an error in your data',
+          'error'
+        );
+        return false;
+      }
+
       const shouldPublish = confirm(
         'Are you sure you want to publish this chart?'
       );

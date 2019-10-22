@@ -7,7 +7,7 @@
     >
     </Notification>
 
-    <h1 class="headline">General Elections 2019: Results</h1>
+    <h1 class="headline">{{ this.chartData.title }}</h1>
     <Vuetable
       class="data-table white"
       ref="vuetable"
@@ -53,10 +53,8 @@ import Vuetable from 'vuetable-2';
 import EditChartField from './EditChartField';
 
 import { fetchCharts, saveAndPublishChart } from '../utils/network';
-import { MAX_COUNT } from '../config';
+import { STATE_ELECTION } from '../config';
 import Notification from './Notification';
-
-const chartId = 1;
 
 export default {
   components: {
@@ -83,6 +81,8 @@ export default {
         }
       ],
 
+      chartData: null,
+
       localData: {
         links: {},
         data: []
@@ -105,7 +105,12 @@ export default {
   },
 
   mounted() {
-    fetchCharts(chartId, this.setInitialData);
+    const url_str = window.location.href;
+    const url = new URL(url_str);
+    const state = url.searchParams.get('state');
+
+    this.chartData = STATE_ELECTION[state];
+    fetchCharts(this.chartData.id, this.setInitialData);
   },
 
   methods: {
@@ -150,8 +155,8 @@ export default {
         }
         sum += parseInt(el.seats, 10);
       });
-      console.log(sum, MAX_COUNT);
-      return numbersValid && sum <= MAX_COUNT;
+      console.log(sum, STATE_ELECTION[this.state]);
+      return numbersValid && sum <= STATE_ELECTION[this.state].max_count;
     },
 
     publish() {
@@ -177,7 +182,7 @@ export default {
           return false;
         }
         saveAndPublishChart(
-          chartId,
+          this.chartData.id,
           { content: this.localData.data },
           this.publishCallback
         );

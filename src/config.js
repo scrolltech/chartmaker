@@ -15,4 +15,15 @@ export default axios.create({
   }
 });
 
-export const MAX_COUNT = 543;
+export const STATE_ELECTION = {
+  mh: {
+    id: 2,
+    title: 'Maharashtra Legislative Assembly election - 2019',
+    max_count: 288
+  },
+  hr: {
+    id: 3,
+    title: 'Haryana Legislative Assembly election - 2019',
+    max_count: 90
+  }
+};
